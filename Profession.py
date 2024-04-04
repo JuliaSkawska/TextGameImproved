@@ -24,8 +24,6 @@ class Profession:
             print(f"- {skill['sname']}: {skill['typ']}, {skill['dmbase']} base damage")
         print('{:*^50}'.format(''))
 
-    def add_skill(self, sname, typ, dmbase):
-        self.skills.append({'sname': sname, 'typ': typ, 'dmbase': dmbase})  # Update keys here
     def __str__(self):
         return self.__class__.__name__
 
@@ -60,6 +58,8 @@ class Alchemist(Profession):
         self.add_skill("Acidic Potion", "Physical", 20)
         self.add_skill("Explosive Potion", "Physical", 20)
         self.add_skill("Soothin Potion", "Magical", 5)
+
+        
 def UserInput(text, options):
     sense = False
     while not sense:
