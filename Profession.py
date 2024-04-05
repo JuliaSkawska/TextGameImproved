@@ -24,9 +24,36 @@ class Profession:
             print(f"- {skill['sname']}: {skill['typ']}, {skill['dmbase']} base damage")
         print('{:*^50}'.format(''))
 
+    def add_skill(self, sname, typ, dmbase):
+        self.skills.append({'sname': sname, 'typ': typ, 'dmbase': dmbase})  # Update keys here
     def __str__(self):
         return self.__class__.__name__
 
+class PlayerCharacter():
+    def __init__(self, name, profession):
+        self.name = name
+        self.profession = profession
+        self.character = None
+    def ChooseProfession(self, profession):
+        if profession == "alchemist":
+            self.character = Alchemist()
+        elif profession == "warrior":
+            self.character = Warrior()
+        elif profession == "thief":
+            self.character = Thief()
+        elif profession == "mage":
+            self.character = Mage()
+    def DisplayInfo(self):
+        print(f"Character Name: {self.name}")
+        print(f"Profession: {self.profession}")
+        if self.character:
+            self.character.info()
+        else:
+            print("No character chosen yet.")
+
+    def current(self, cheal, mr, pr, cri):
+        if self.character:
+            self.character.current(cheal, mr, pr, cri)
 class Warrior(Profession):
     def __init__(self):
         super().__init__(health=80, magicres=20, phyres=20, crit=20, dodge=10)
@@ -58,8 +85,6 @@ class Alchemist(Profession):
         self.add_skill("Acidic Potion", "Physical", 20)
         self.add_skill("Explosive Potion", "Physical", 20)
         self.add_skill("Soothin Potion", "Magical", 5)
-
-        
 def UserInput(text, options):
     sense = False
     while not sense:
@@ -73,7 +98,12 @@ def UserInput(text, options):
     return res
 
 
-def ChooseClass():
+def CreateCharacter():
+    check = "no"
+    while check == "no":
+        name = input("Name your character: ")
+        check = UserInput("Are you sure [Yes/No]: ", ["yes", "no"])
+
     print('{:*^50}'.format('Alchemist:'))
     Alchemist().info()
     print('{:*^50}'.format('Warrior:'))
@@ -85,16 +115,9 @@ def ChooseClass():
 
     classes = ["alchemist", "warrior", "thief", "mage"]
 
-    pc = UserInput("Please choose your profession [Alchemist/Warrior/Thief/Mage]", classes)
+    pc = UserInput("Please choose your profession [Alchemist/Warrior/Thief/Mage]: ", classes)
 
-    if pc == "alchemist":
-        pc = Alchemist()
-    elif pc == "warrior":
-        pc = Warrior()
-    elif pc == "thief":
-        pc = Thief()
-    elif pc == "mage":
-        pc = Mage()
-    print(f"Congrats, your character is now a {pc}")
+    player = PlayerCharacter(name, pc)
+    return player
 
-ChooseClass()
+player=CreateCharacter()
