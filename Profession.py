@@ -118,6 +118,8 @@ def CreateCharacter():
     pc = UserInput("Please choose your profession [Alchemist/Warrior/Thief/Mage]: ", classes)
 
     player = PlayerCharacter(name, pc)
+    player.ChooseProfession(pc)
     return player
 
 player=CreateCharacter()
+player.DisplayInfo()
