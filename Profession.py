@@ -1,3 +1,23 @@
+import random
+
+def DiceRoll(check,num):
+    result=random.randint(num,100)
+    if result > check:
+        return True
+    else:
+        return False
+
+def UserInput(text, options):
+    sense = False
+    while not sense:
+        res = input(text)
+        res = res.strip()
+        res = res.lower()
+        if res in options:
+            sense = True
+        else:
+            print("Make sure you wrote the correct prompt :D")
+    return res
 class Profession:
     def __init__(self, health, magicres, phyres, crit, dodge):
         self.health = health
@@ -54,6 +74,7 @@ class PlayerCharacter():
     def current(self, cheal, mr, pr, cri):
         if self.character:
             self.character.current(cheal, mr, pr, cri)
+            
 class Warrior(Profession):
     def __init__(self):
         super().__init__(health=80, magicres=20, phyres=20, crit=20, dodge=10)
@@ -85,19 +106,7 @@ class Alchemist(Profession):
         self.add_skill("Acidic Potion", "Physical", 20)
         self.add_skill("Explosive Potion", "Physical", 20)
         self.add_skill("Soothin Potion", "Magical", 5)
-def UserInput(text, options):
-    sense = False
-    while not sense:
-        res = input(text)
-        res = res.strip()
-        res = res.lower()
-        if res in options:
-            sense = True
-        else:
-            print("Make sure you wrote the correct prompt :D")
-    return res
-
-
+        
 def CreateCharacter():
     check = "no"
     while check == "no":
@@ -121,5 +130,30 @@ def CreateCharacter():
     player.ChooseProfession(pc)
     return player
 
-player=CreateCharacter()
-player.DisplayInfo()
+class Enemy():
+    active_enemies = []
+    def __init__(self, name, health, magicres, phyres, dodge, type):
+        self.name = name
+        self.health = health
+        self.magicres = magicres
+        self.phyres = phyres
+        self.dodge = dodge
+        self.type = type
+        Enemy.active_enemies.append(self)
+    def status(self):
+        print(f"{self.name} currently has {self.health} health left")
+    def take_damage(self,damage,chance):
+        if DiceRoll(self.dodge,chance)==True:
+            self.health -= damage
+            print(f"{self.name} has taken damage!\n{self.name} is now at {self.health} hp")
+            if self.health <= 0:
+                print(f"{self.name} has been defeated!")
+                self.remove()
+        else:
+            print(f"{self.name} managed to dodge your attack")
+    def remove(self):
+        Enemy.active_enemies.remove(self)
+
+#ala=Enemy("kasia",20,20,20,20,"boop")
+#ala.status()
+#ala.take_damage(50,5)
