@@ -1,7 +1,6 @@
 import random
-
-def DiceRoll(check,num):
-    result=random.randint(num,100)
+def DiceRoll(check,num,treshold):
+    result=random.randint(num,treshold)
     if result > check:
         return True
     else:
@@ -18,6 +17,7 @@ def UserInput(text, options):
         else:
             print("Make sure you wrote the correct prompt :D")
     return res
+
 class Profession:
     def __init__(self, health, magicres, phyres, crit, dodge):
         self.health = health
@@ -74,7 +74,7 @@ class PlayerCharacter():
     def current(self, cheal, mr, pr, cri):
         if self.character:
             self.character.current(cheal, mr, pr, cri)
-            
+
 class Warrior(Profession):
     def __init__(self):
         super().__init__(health=80, magicres=20, phyres=20, crit=20, dodge=10)
@@ -106,7 +106,7 @@ class Alchemist(Profession):
         self.add_skill("Acidic Potion", "Physical", 20)
         self.add_skill("Explosive Potion", "Physical", 20)
         self.add_skill("Soothin Potion", "Magical", 5)
-        
+
 def CreateCharacter():
     check = "no"
     while check == "no":
@@ -132,18 +132,19 @@ def CreateCharacter():
 
 class Enemy():
     active_enemies = []
-    def __init__(self, name, health, magicres, phyres, dodge, type):
+    def __init__(self, name, health, magicres, phyres, dodge, atype, actions):
         self.name = name
         self.health = health
         self.magicres = magicres
         self.phyres = phyres
         self.dodge = dodge
-        self.type = type
+        self.atype = atype
+        self.actions = actions
         Enemy.active_enemies.append(self)
     def status(self):
         print(f"{self.name} currently has {self.health} health left")
-    def take_damage(self,damage,chance):
-        if DiceRoll(self.dodge,chance)==True:
+    def take_damage(self,damage,chance,treshold):
+        if DiceRoll(self.dodge,chance,treshold)==True:
             self.health -= damage
             print(f"{self.name} has taken damage!\n{self.name} is now at {self.health} hp")
             if self.health <= 0:
@@ -151,8 +152,35 @@ class Enemy():
                 self.remove()
         else:
             print(f"{self.name} managed to dodge your attack")
+    def take_action(self):
+        chance = 1
+        threshold = len(self.actions)-1
+        if DiceRoll(self.dodge, chance, threshold):
+            choice_index = random.randint(0, threshold)
+            choice_function = self.actions[choice_index]
+            choice_function()
     def remove(self):
         Enemy.active_enemies.remove(self)
+
+#Example of Enemy subclass for testing
+class Brute(Enemy):
+    def __init__(self, name, health, magicres, phyres, dodge):
+        actions = [self.attack, self.charge_attack, self.block]
+        super().__init__(name, health, magicres, phyres, dodge, "Brute", actions)
+
+    def attack(self):
+        print(f"{self.name} attacks!")
+
+    def charge_attack(self):
+        print(f"{self.name} is preparing a charged attack!!!")
+
+    def block(self):
+        print(f"{self.name} is hiding behind a shield!")
+
+# Testing
+brute1 = Brute("Goblin Warrior", 50, 10, 5, 5)
+brute1.take_action()
+brute1.take_damage(50,10,10)
 
 #ala=Enemy("kasia",20,20,20,20,"boop")
 #ala.status()
