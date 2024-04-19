@@ -1,7 +1,7 @@
 import random
-def DiceRoll(check,num,treshold):
-    result=random.randint(num,treshold)
-    if result > check:
+def DodgeChance(min_to_hit,max_to_hit):
+    result=random.randint(0,max_to_hit)
+    if result>min_to_hit:
         return True
     else:
         return False
@@ -143,8 +143,8 @@ class Enemy():
         Enemy.active_enemies.append(self)
     def status(self):
         print(f"{self.name} currently has {self.health} health left")
-    def take_damage(self,damage,chance,treshold):
-        if DiceRoll(self.dodge,chance,treshold)==True:
+    def take_damage(self,damage,chance):#calculates if an attack hits, if it does, removes the hp or the enemy
+        if DodgeChance(self.dodge,chance)==True:
             self.health -= damage
             print(f"{self.name} has taken damage!\n{self.name} is now at {self.health} hp")
             if self.health <= 0:
@@ -152,13 +152,11 @@ class Enemy():
                 self.remove()
         else:
             print(f"{self.name} managed to dodge your attack")
-    def take_action(self):
-        chance = 1
+    def take_action(self):#chooses one of x action for enemy to take
         threshold = len(self.actions)-1
-        if DiceRoll(self.dodge, chance, threshold):
-            choice_index = random.randint(0, threshold)
-            choice_function = self.actions[choice_index]
-            choice_function()
+        choice_index = random.randint(0, threshold)
+        choice_function = self.actions[choice_index]
+        choice_function()
     def remove(self):
         Enemy.active_enemies.remove(self)
 
@@ -178,10 +176,8 @@ class Brute(Enemy):
         print(f"{self.name} is hiding behind a shield!")
 
 # Testing
-brute1 = Brute("Goblin Warrior", 50, 10, 5, 5)
+'''
+brute1 = Brute("Goblin Warrior",20,5,5,5)
 brute1.take_action()
-brute1.take_damage(50,10,10)
-
-#ala=Enemy("kasia",20,20,20,20,"boop")
-#ala.status()
-#ala.take_damage(50,5)
+brute1.take_damage(2,10)
+'''
