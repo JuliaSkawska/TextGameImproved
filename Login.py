@@ -23,6 +23,12 @@ class LoginRegister:
                 break
 
     def login(self):
+        """
+        Logs the user in by prompting for their username and password.
+        
+        Returns:
+            str: The username of the logged-in user if successful, otherwise None.
+        """
         print("\nWelcome, let's try to log you in :D\n")
 
         while True:
@@ -40,6 +46,12 @@ class LoginRegister:
         return None
 
     def register(self):
+        """
+        Registers a new user by prompting for a new username and password.
+        
+        Returns:
+            str: The username of the newly registered user if successful, otherwise None.
+        """
         print("\nWelcome, let's create your new account\n")
         new_username = input("Enter a new username: ")
         new_password = input("Enter a new password: ")
