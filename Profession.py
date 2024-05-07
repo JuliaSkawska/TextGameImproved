@@ -36,11 +36,18 @@ class Profession:
         '''
         Print character information.
         '''
-        print('{:*^50}'.format('Character Info:'))
-        print(f"Health: {self.current_health}/{self.max_health}\nMagical Resistance: {self.magical_resistance}\nPhysical Resistance: {self.physical_resistance}\nCritical hit chance: {self.critical_hit_chance}%\nSkills:")
-        for skill in self.skills:
-            print(f"- {skill['name']}: {skill['type']}, {skill['base_damage']} base damage")
-        print('{:*^50}'.format(''))
+        header = '{:*^50}'.format('Character Info:')
+        skills_info = "\n".join(
+            [f"- {skill['name']}: {skill['type']}, {skill['base_damage']} base damage" for skill in self.skills])
+        footer = '{:*^50}'.format('')
+        print(f"{header}\n"
+              f"Health: {self.current_health}/{self.max_health}\n"
+              f"Magical Resistance: {self.magical_resistance}\n"
+              f"Physical Resistance: {self.physical_resistance}\n"
+              f"Critical hit chance: {self.critical_hit_chance}%\n"
+              f"Skills:\n"
+              f"{skills_info}\n"
+              f"{footer}")
 
     def add_skill(self, name, skill_type, base_damage):
         '''
@@ -56,7 +63,6 @@ class Profession:
         Return class name.
         '''
         return self.__class__.__name__
-
 
 class PlayerCharacter:
     def __init__(self, name, profession):
@@ -74,21 +80,26 @@ class PlayerCharacter:
         Choose the profession for the player character.
         :param profession: Chosen profession of the player character.
         '''
-        if profession == "alchemist":
-            self.character = Alchemist()
-        elif profession == "warrior":
-            self.character = Warrior()
-        elif profession == "thief":
-            self.character = Thief()
-        elif profession == "mage":
-            self.character = Mage()
+
+        class_mapping = {
+            "alchemist": Alchemist,
+            "warrior": Warrior,
+            "thief": Thief,
+            "mage": Mage
+        }
+
+        character_class = class_mapping.get(profession)
+        if character_class:
+            self._character = character_class()
+        else:
+            raise ValueError(f"Invalid profession: {profession}")
 
     def display_info(self):
         '''
         Display the information about the player character.
         '''
-        print(f"Character Name: {self.name}")
         if self.character:
+            print(f"Character Name: {self.name}")
             self.character.info()
         else:
             print("No character chosen yet.")
@@ -99,6 +110,8 @@ class PlayerCharacter:
         '''
         if self.character:
             self.character.current(current_health)
+        else:
+            print("No character chosen yet")
 
 class Warrior(Profession):
     def __init__(self):
@@ -147,9 +160,7 @@ def create_character():
     classes = ["alchemist", "warrior", "thief", "mage"]
     pc = user_input("Please choose your profession [Alchemist/Warrior/Thief/Mage]: ", classes)
 
-    player = PlayerCharacter(name, pc)
-    player.choose_profession(pc)
-    return player
+    return PlayerCharacter(name, pc)
 
 class Enemy():
     active_enemies = []
@@ -204,5 +215,6 @@ brute1.take_damage(2,10)
 '''
 
 p1=create_character()
+
 p1.display_info()
 
